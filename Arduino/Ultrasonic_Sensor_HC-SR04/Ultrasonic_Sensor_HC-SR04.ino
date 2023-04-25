@@ -18,13 +18,12 @@ void loop(){
   // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
-
-  // Reads the echoPin, returns the sound wave travel time in microseconds
   digitalWrite(trigPin, LOW);
 
   Serial.println("/ / / / / / / / / / / / / / / /");
 
-  // The speed of sound is 340m/s, which is equal to 34cm/ms
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  // The speed of sound is 340m/s which is equal to 34cm/ms = 34/1000 = 0.034
   pulseDuration = pulseIn(echoPin, HIGH);
   Serial.print("Pulse duration: ");
   Serial.println(pulseDuration);
