@@ -7,8 +7,9 @@ float soundLevel;
 const float threshold = 64.5;
 
 void setup(){
-  pinMode(LED, OUTPUT);
   Serial.begin(9600);
+  pinMode(soundRead, INPUT);
+  pinMode(LED, OUTPUT);
 }
 
 void loop(){
