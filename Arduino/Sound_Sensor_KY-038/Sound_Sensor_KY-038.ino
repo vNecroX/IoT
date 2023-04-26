@@ -25,9 +25,9 @@ void loop(){
   Serial.println(soundLevel);
   Serial.print("\n");
 
-  // Our limit is 64.5, if sound level is equal or exceed it, then, based on the random number
+  // The threshold limit is 64.5, if sound level is equal or exceed it, then, based on the random number
   // there is a reduced chance to get and 50 or higher number up to 60, in other words
-  // 1/6 or 0.16 chances to turn on the LED as a detected sound
+  // 1/6 or 0.16% chances to turn on the LED as a detected sound
   if(soundLevel >= threshold) digitalWrite(LED, HIGH);
   else digitalWrite(LED, LOW);
 
