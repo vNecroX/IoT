@@ -1,0 +1,2 @@
+Ejemplo de URL en el servidor
+https://ceti-iiot-codemasterx.000webhostapp.com/get_table.php?data=[{%22nombre%22:%22Sensor%20de%20Humedad%22,%22datos%22:[{%22tipoDeDato%22:%22Humedad%22,%22resultado%22:%2280%%22},{%22tipoDeDato%22:%22Temperatura%22,%22resultado%22:%2230%C2%B0C%22}]}]
