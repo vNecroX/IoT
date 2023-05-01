@@ -1,0 +1,93 @@
+:root {
+    --primary-color: white;
+    --secondary-color: #404652;
+    --highlight-color: #3282b8;
+
+    --table-padding: 12px;
+    --table-padding-s: 6px;
+    --table-padding-xs: 2px;
+
+    --table-border-radius: 10px;
+
+    --table-background-color-container: #2a3338;
+    --table-border-color: var(--secondary-color);
+    --table-text-color: var(--primary-color);
+    --table-hover-cell-color: var(--highlight-color);
+    --table-even-row-color: var(--secondary-color);
+}
+
+body {
+    background-color: rgb(165, 186, 204);
+    margin: 0;
+}
+
+header {
+    display: flex;
+    height: auto;
+    background-color: rgb(136, 218, 204);
+    text-align: center;
+    align-items: center;
+    margin: 0;
+}
+
+h2 {
+    display: block;
+    padding-right: 100px;
+    padding-left: 30px;
+}
+
+.datatable-container {
+    font-family: 'Noto Sans', sans-serif;
+    background-color: var(--table-background-color-container);
+    border-radius: var(--table-border-radius);
+    color: var(--table-text-color);
+    min-width: 600px;
+    width: 75%;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 12px;
+    padding-bottom: var(--table-padding);
+}
+
+.datatable-container .table-title {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    display: block;
+}
+
+.datatable-container .table-title>h3 {
+    display: block;
+    padding-top: 5px;
+}
+
+.datatable-container .datatable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.datatable-container .datatable,
+.datatable-container .datatable th,
+.datatable-container .datatable td {
+    padding: var(--table-padding) var(--table-padding);
+}
+
+.datatable-container .datatable th {
+    font-weight: bolder;
+    text-align: left;
+    border-bottom: solid 1px var(--table-border-color);
+}
+
+.datatable-container .datatable td {
+    border: 1px solid;
+    border-color: var(--highlight-color);
+}
+
+.datatable-container .datatable tbody tr:nth-child(even) {
+    background-color: var(--table-even-row-color);
+}
+
+.datatable-container .datatable tbody tr:hover {
+    background-color: var(--table-hover-cell-color);
+}
