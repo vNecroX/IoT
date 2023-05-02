@@ -1,0 +1,13 @@
+Ejemplo de URL en el servidor
+https://ceti-iiot-codemasterx.000webhostapp.com/get_table.php?data=[{%22nombre%22:%22Sensor%20de%20Humedad%22,%22datos%22:[{%22tipoDeDato%22:%22Humedad%22,%22resultado%22:%2280%%22},{%22tipoDeDato%22:%22Temperatura%22,%22resultado%22:%2230%C2%B0C%22}]}]
+
+Database conection conf:
+$servername = "localhost";
+$username = "root";//"id20686621_codemasterx" //"root"
+$password = "";//~Md]>IFxaJyOL4P1 //""
+$dbname = "ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
+
+$servername = "localhost";
+$username = "id20686621_codemasterx";//"id20686621_codemasterx" //"root"
+$password = "~Md]>IFxaJyOL4P1";//~Md]>IFxaJyOL4P1 //""
+$dbname = "id20686621_ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
