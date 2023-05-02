@@ -1,5 +1,10 @@
+#include <WiFi.h>
 #include <DHT.h>
 #include <ArduinoJson.h>
+
+// Replace with own network credentials
+const char* ssid = "iPhone de Aaron";
+const char* password = "pokemon132";
 
 #define DHTPIN_GPIO5 5     
 #define DHTTYPE DHT11 
@@ -21,6 +26,8 @@ String cm = String("cm");
 
 void setup(){
   Serial.begin(9600);
+
+  connectToWifi();
   
   dht.begin();
 
@@ -44,6 +51,25 @@ void loop(){
   createJSON();
 
   delay(2000);
+}
+
+void connectToWifi(){
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    Serial.print(".");
+  }
+  
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("\n");
 }
 
 void readHT(){
