@@ -38,6 +38,8 @@ if(isset($_GET['data'])) {
                                 $sql = "INSERT INTO datos (sensor_id, tipoDeDato, resultado) VALUES ('$sensor_id', '$tipoDeDato', '$resultado')";
                                 if ($conn->query($sql) !== TRUE) {
                                     echo "Error: " . $sql . "<br>" . $conn->error;
+                                }else{
+                                    echo "{'response':'OK'}";
                                 }
                             }
                         }

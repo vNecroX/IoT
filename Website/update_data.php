@@ -38,6 +38,8 @@ if(isset($_GET['data'])) {
                                 $sql = "UPDATE datos SET resultado='$resultado' WHERE sensor_id='$sensor_id' AND tipoDeDato='$tipoDeDato'";
                                 if ($conn->query($sql) !== TRUE) {
                                     echo "Error: " . $sql . "<br>" . $conn->error;
+                                }else{
+                                    echo "{'response':'OK'}";
                                 }
                             }
                         }
