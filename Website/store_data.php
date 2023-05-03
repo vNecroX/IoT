@@ -12,8 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if(isset($_GET['data'])) {
-    $json = $_GET['data'];
+if(isset($_POST['data'])) {
+    $json = $_POST['data'];
     $data = json_decode($json);
     echo "[";
     if(is_array($data)){

@@ -12,15 +12,19 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if(isset($_GET['data'])) {
-    $json = $_GET['data'];
+if(isset($_POST['data'])) {
+    $json = $_POST['data'];
     $data = json_decode($json);
     echo "[";
     if(is_array($data)){
         $contadorArrayTemp=FALSE;
         foreach($data as $obj) {
-            if ($contadorArrayTemp==TRUE) echo ",";
-            else $contadorArrayTemp=TRUE;
+            if ($contadorArrayTemp==TRUE){
+                echo ",";
+            }else {
+                $contadorArrayTemp=TRUE;
+                
+            }
             //nombre: nombre del sensor | datos: datos del sensor en json
             if(isset($obj->nombre) && isset($obj->datos)) {
                 $nombre = $conn->real_escape_string($obj->nombre);
