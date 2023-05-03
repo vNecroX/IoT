@@ -15,6 +15,7 @@ if ($conn->connect_error) {
 if(isset($_GET['data'])) {
     $json = $_GET['data'];
     $data = json_decode($json);
+    echo "[";
     if(is_array($data)){
         foreach($data as $obj) {
             //nombre: nombre del sensor | datos: datos del sensor en json
@@ -76,6 +77,7 @@ if(isset($_GET['data'])) {
             }
         }
     }
+    echo "]";
 } else {
     echo "Please provide JSON data.";
 }
