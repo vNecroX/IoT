@@ -19,7 +19,7 @@ if(isset($_GET['data'])) {
     if(is_array($data)){
         $contadorArrayTemp=FALSE;
         foreach($data as $obj) {
-            if ($contadorArrayTemp==FALSE) echo ",";
+            if ($contadorArrayTemp==TRUE) echo ",";
             else $contadorArrayTemp=TRUE;
             //nombre: nombre del sensor | datos: datos del sensor en json
             if(isset($obj->nombre) && isset($obj->datos)) {
