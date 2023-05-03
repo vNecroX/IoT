@@ -1,5 +1,12 @@
+#include <WiFi.h>
 #include <DHT.h>
 #include <ArduinoJson.h>
+//#include <WiFiClient.h>
+#include <HTTPClient.h>
+
+// Own network credentials
+const char* ssid = "INFINITUM0F03_2.4";
+const char* password = "5327435555";
 
 #define DHTPIN_GPIO5 5     
 #define DHTTYPE DHT11 
@@ -8,7 +15,7 @@ float h, t;
 String percent = String("%");
 String celsius = String("°C");
 
-int PHOTO_GPIO4 = 4;
+int PHOTO_GPIO34 = 34;
 int lumens;
 String luminosityLevel = String(" lumenes");
 
@@ -19,12 +26,17 @@ long pulseDuration;
 float distance;
 String cm = String("cm");
 
+String serverName = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php/?data=";
+// const char* serverName = "ceti-iiot-codemasterx.000webhostapp.com";
+
 void setup(){
   Serial.begin(9600);
+
+  connectToWifi();
   
   dht.begin();
 
-  pinMode(PHOTO_GPIO4, INPUT);
+  pinMode(PHOTO_GPIO34, INPUT);
 
   pinMode(ULTRAtrig_GPIO18, OUTPUT);
   pinMode(ULTRAecho_GPIO19, INPUT);
@@ -43,7 +55,26 @@ void loop(){
   Serial.println("JSON  / / / / / / / / / / / / / / / /");
   createJSON();
 
-  delay(2000);
+  delay(5000);
+}
+
+void connectToWifi(){
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("\n");
 }
 
 void readHT(){
@@ -61,11 +92,11 @@ void readHT(){
     Serial.print(t);
   }
 
-  Serial.print("\n\n");
+  Serial.print("\n");
 }
 
 void readLuminosity(){
-  lumens = analogRead(PHOTO_GPIO4);
+  lumens = analogRead(PHOTO_GPIO34);
   Serial.print("Luminosity level: ");
   Serial.println(lumens);
   Serial.print("\n");
@@ -145,4 +176,32 @@ void createJSON(){
   serializeJsonPretty(JSON_Encoder, Serial);
 
   Serial.print("\n\n");
+
+  HTTPClient http;
+  
+  String serverPath = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php?";
+  // Two ways to do the same
+  String jsonData = JSON_Encoder.as<String>();
+  // String encoder;
+  // serializeJson(JSON_Encoder, encoder);
+  String requestBody = "data=" + jsonData;
+
+  Serial.print("jsonData: ");
+  Serial.println(jsonData);
+  
+  http.begin(serverPath);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  
+  int httpResponseCode = http.POST(requestBody);
+  
+  if(httpResponseCode > 0){
+    String response = http.getString();
+    Serial.println(response);
+  }else{
+    Serial.println("Error on HTTP request");
+  }
+
+  http.end();
+  
+  Serial.print("\n");
 }
