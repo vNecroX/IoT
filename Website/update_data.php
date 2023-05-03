@@ -17,7 +17,10 @@ if(isset($_GET['data'])) {
     $data = json_decode($json);
     echo "[";
     if(is_array($data)){
+        $contadorArrayTemp=FALSE;
         foreach($data as $obj) {
+            if ($contadorArrayTemp==FALSE) echo ",";
+            else $contadorArrayTemp=TRUE;
             //nombre: nombre del sensor | datos: datos del sensor en json
             if(isset($obj->nombre) && isset($obj->datos)) {
                 $nombre = $conn->real_escape_string($obj->nombre);
