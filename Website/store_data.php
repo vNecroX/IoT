@@ -12,11 +12,15 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if(isset($_GET['data'])) {
-    $json = $_GET['data'];
+if(isset($_POST['data'])) {
+    $json = $_POST['data'];
     $data = json_decode($json);
+    echo "[";
     if(is_array($data)){
+        $contadorArrayTemp=FALSE;
         foreach($data as $obj) {
+            if ($contadorArrayTemp==TRUE) echo ",";
+            else $contadorArrayTemp=TRUE;
             //nombre: nombre del sensor | datos: datos del sensor en json
             if(isset($obj->nombre) && isset($obj->datos)) {
                 $nombre = $conn->real_escape_string($obj->nombre);
@@ -38,6 +42,8 @@ if(isset($_GET['data'])) {
                                 $sql = "INSERT INTO datos (sensor_id, tipoDeDato, resultado) VALUES ('$sensor_id', '$tipoDeDato', '$resultado')";
                                 if ($conn->query($sql) !== TRUE) {
                                     echo "Error: " . $sql . "<br>" . $conn->error;
+                                }else{
+                                    echo "{'response':'OK'}";
                                 }
                             }
                         }
@@ -50,6 +56,7 @@ if(isset($_GET['data'])) {
             }
         }
     }
+    echo "]";
 } else {
     echo "Please provide JSON data.";
 }
