@@ -181,7 +181,7 @@ void createJSON(){
   // serializeJson(JSON_Encoder, jsonDataEncoder);
   String requestBody = "data=" + jsonDataEncoder;
 
-  Serial.print("jsonDataEncoder: ");
+  Serial.print("jsonData: ");
   Serial.println(jsonDataEncoder);
 
   sendJSON(requestBody);
