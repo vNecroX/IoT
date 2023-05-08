@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <DHT.h>
 #include <ArduinoJson.h>
-//#include <WiFiClient.h>
 #include <HTTPClient.h>
 
 // Own network credentials
@@ -26,8 +25,7 @@ long pulseDuration;
 float distance;
 String cm = String("cm");
 
-String serverName = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php/?data=";
-// const char* serverName = "ceti-iiot-codemasterx.000webhostapp.com";
+String serverPath = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php";
 
 void setup(){
   Serial.begin(9600);
@@ -176,32 +174,37 @@ void createJSON(){
   serializeJsonPretty(JSON_Encoder, Serial);
 
   Serial.print("\n\n");
-
-  HTTPClient http;
   
-  String serverPath = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php?";
   // Two ways to do the same
-  String jsonData = JSON_Encoder.as<String>();
-  // String encoder;
-  // serializeJson(JSON_Encoder, encoder);
-  String requestBody = "data=" + jsonData;
+  String jsonDataEncoder = JSON_Encoder.as<String>();
+  // String jsonDataEncoder;
+  // serializeJson(JSON_Encoder, jsonDataEncoder);
+  String requestBody = "data=" + jsonDataEncoder;
 
   Serial.print("jsonData: ");
-  Serial.println(jsonData);
+  Serial.println(jsonDataEncoder);
+
+  sendJSON(requestBody);
+  
+  Serial.print("\n");
+}
+
+void sendJSON(String request){
+  HTTPClient http;
   
   http.begin(serverPath);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   
-  int httpResponseCode = http.POST(requestBody);
+  int httpResponseCode = http.POST(request);
+  String response = http.getString();
   
   if(httpResponseCode > 0){
-    String response = http.getString();
     Serial.println(response);
   }else{
     Serial.println("Error on HTTP request");
+    Serial.print("\n");
+    Serial.println(response);
   }
 
   http.end();
-  
-  Serial.print("\n");
 }
