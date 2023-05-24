@@ -71,11 +71,8 @@ if (isset($_POST['data'])) {
                         }
 
                         // Store data in CSV format
-                        $csvData[] = array(
-                            'timestamp' => $currentTimestamp,
-                            'nombre' => $nombre,
-                            'datos' => json_encode($datos)
-                        );
+                        $csvRow = $currentTimestamp . ',"' . $nombre . '","' . str_replace('"', '""', json_encode($datos)) . '"';
+                        $csvData[] = $csvRow;
                     } else {
                         echo "Error: " . $sql . "<br>" . $conn->error;
                     }
@@ -95,11 +92,11 @@ if (isset($_POST['data'])) {
                 echo "Error opening file.";
             } else {
                 if (!$fileExists) {
-                    fputcsv($file, array('Timestamp', 'Nombre', 'Datos'));
+                    fwrite($file, "Timestamp,Nombre,Datos\n");
                 }
 
                 foreach ($csvData as $row) {
-                    fputcsv($file, $row);
+                    fwrite($file, $row . "\n");
                 }
 
                 fclose($file);

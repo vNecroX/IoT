@@ -1,0 +1,7 @@
+Timestamp,Nombre,Datos
+1653281400,"Sensor de Humedad","[{""tipoDeDato"":""Humedad"",""resultado"":""39.00%""},{""tipoDeDato"":""Temperatura"",""resultado"":""28.60°C""}]"
+1653281400,"Sensor de luz","[{""tipoDeDato"":""Luminosidad"",""resultado"":""338 lumenes""}]"
+1653281400,"Sensor de ultrasonido","[{""tipoDeDato"":""Distancia"",""resultado"":""22.34cm""}]"
+1653281405,"Sensor de Humedad","[{""tipoDeDato"":""Humedad"",""resultado"":""40.00%""},{""tipoDeDato"":""Temperatura"",""resultado"":""28.70°C""}]"
+1653281405,"Sensor de luz","[{""tipoDeDato"":""Luminosidad"",""resultado"":""350 lumenes""}]"
+1653281405,"Sensor de ultrasonido","[{""tipoDeDato"":""Distancia"",""resultado"":""22.50cm""}]"
