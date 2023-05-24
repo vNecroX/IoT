@@ -12,41 +12,36 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if(isset($_POST['data'])) {
+if (isset($_POST['data'])) {
     $json = $_POST['data'];
     $data = json_decode($json);
-    echo "[";
-    if(is_array($data)){
-        $contadorArrayTemp=FALSE;
-        foreach($data as $obj) {
-            if ($contadorArrayTemp==TRUE){
-                echo ",";
-            }else {
-                $contadorArrayTemp=TRUE;
-                
-            }
-            //nombre: nombre del sensor | datos: datos del sensor en json
-            if(isset($obj->nombre) && isset($obj->datos)) {
+    $currentTimestamp = time();
+    $csvData = array();
+
+    if (is_array($data)) {
+        foreach ($data as $obj) {
+            if (isset($obj->nombre) && isset($obj->datos)) {
                 $nombre = $conn->real_escape_string($obj->nombre);
                 $datos = $obj->datos;
 
                 // Check if sensor already exists in "sensores" table
                 $sql = "SELECT id FROM sensores WHERE nombre='$nombre'";
                 $result = $conn->query($sql);
+
                 if ($result->num_rows > 0) {
                     // Sensor exists, update "datos" table
                     $sensor_id = $result->fetch_assoc()['id'];
-                    if(is_array($datos)){
-                        foreach($datos as $dato) {
-                            //tipoDeDato: que se esta midiendo | resultado: que se recibio
-                            if(isset($dato->tipoDeDato) && isset($dato->resultado)) {
+
+                    if (is_array($datos)) {
+                        foreach ($datos as $dato) {
+                            if (isset($dato->tipoDeDato) && isset($dato->resultado)) {
                                 $tipoDeDato = $conn->real_escape_string($dato->tipoDeDato);
                                 $resultado = $conn->real_escape_string($dato->resultado);
 
                                 $sql = "UPDATE datos SET resultado='$resultado' WHERE sensor_id='$sensor_id' AND tipoDeDato='$tipoDeDato'";
                                 if ($conn->query($sql) !== TRUE) {
                                     echo "Error: " . $sql . "<br>" . $conn->error;
-                                }else{
+                                } else {
                                     echo "{'response':'OK'}";
                                 }
                             }
@@ -59,22 +54,28 @@ if(isset($_POST['data'])) {
                         $sensor_id = $conn->insert_id;
 
                         // Insert data into "datos" table
-                        if(is_array($datos)){
-                            foreach($datos as $dato) {
-                                //tipoDeDato: que se esta midiendo | resultado: que se recibio
-                                if(isset($dato->tipoDeDato) && isset($dato->resultado)) {
+                        if (is_array($datos)) {
+                            foreach ($datos as $dato) {
+                                if (isset($dato->tipoDeDato) && isset($dato->resultado)) {
                                     $tipoDeDato = $conn->real_escape_string($dato->tipoDeDato);
                                     $resultado = $conn->real_escape_string($dato->resultado);
 
                                     $sql = "INSERT INTO datos (sensor_id, tipoDeDato, resultado) VALUES ('$sensor_id', '$tipoDeDato', '$resultado')";
                                     if ($conn->query($sql) !== TRUE) {
                                         echo "Error: " . $sql . "<br>" . $conn->error;
-                                    }else{
+                                    } else {
                                         echo "{'response':'OK'}";
                                     }
                                 }
                             }
                         }
+
+                        // Store data in CSV format
+                        $csvData[] = array(
+                            'timestamp' => $currentTimestamp,
+                            'nombre' => $nombre,
+                            'datos' => json_encode($datos)
+                        );
                     } else {
                         echo "Error: " . $sql . "<br>" . $conn->error;
                     }
@@ -83,8 +84,29 @@ if(isset($_POST['data'])) {
                 echo "Please provide the JSON data required.";
             }
         }
+
+        // Append data to CSV file
+        if (!empty($csvData)) {
+            $csvFile = 'sensor_data.csv';
+            $fileExists = file_exists($csvFile);
+
+            $file = fopen($csvFile, 'a');
+            if (!$file) {
+                echo "Error opening file.";
+            } else {
+                if (!$fileExists) {
+                    fputcsv($file, array('Timestamp', 'Nombre', 'Datos'));
+                }
+
+                foreach ($csvData as $row) {
+                    fputcsv($file, $row);
+                }
+
+                fclose($file);
+                echo "Data appended to CSV file.";
+            }
+        }
     }
-    echo "]";
 } else {
     echo "Please provide JSON data.";
 }
