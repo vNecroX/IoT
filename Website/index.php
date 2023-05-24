@@ -55,6 +55,47 @@
                     echo "</td></tr>";
                 }
                 echo "</table>";
+                $csvFile = 'sensor_data.csv';
+                if (file_exists($csvFile)) {
+                    echo "<h2>Tabla de datos del archivo CSV</h2>";
+                    echo "<table class='datatable'><thead>";
+                    echo "<tr class='table-titles'><th><h3>Timestamp</h3></th><th><h3>Nombre</h3></th><th><h3>Datos</h3></th></tr></thead><tbody>";
+
+                    $file = fopen($csvFile, 'r');
+                    if ($file) {
+                        $firstLine = true;
+                        while (($row = fgetcsv($file)) !== false) {
+                            if ($firstLine) {
+                                $firstLine = false;
+                                continue;
+                            }
+
+                            $timestamp = date('Y-m-d H:i:s', $row[0]);
+                            $nombre = $row[1];
+                            $datos = json_decode($row[2]);
+
+                            echo "<tr><td>$timestamp</td><td>$nombre</td><td>";
+                            if (isset($datos)) {
+                                foreach ($datos as $dato) {
+                                    $tipoDeDato = $dato->tipoDeDato;
+                                    $resultado = $dato->resultado;
+                                    echo "$tipoDeDato: $resultado<br/>";
+                                }
+                            } else {
+                                echo "No data available.";
+                            }
+                            echo "</td></tr>";
+                        }
+
+                        fclose($file);
+                    } else {
+                        echo "Error al abrir el archivo CSV.";
+                    }
+
+                    echo "</tbody></table>";
+                } else {
+                    echo "<p>No se encontró el archivo CSV.</p>";
+                }
             } else {
                 echo "No data available.";
             }
