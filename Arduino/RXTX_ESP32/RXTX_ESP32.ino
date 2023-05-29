@@ -4,8 +4,8 @@
 #include <HTTPClient.h>
 
 // Own network credentials
-const char* ssid = "INFINITUM0F03_2.4";
-const char* password = "5327435555";
+const char* ssid = "json";
+const char* password = "12345678";
 
 #define DHTPIN_GPIO5 5     
 #define DHTTYPE DHT11 
