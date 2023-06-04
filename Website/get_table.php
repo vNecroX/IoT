@@ -46,5 +46,6 @@
             }
         ?>
     </div>
+    <a class="config-button" href="configuracion.php">Configuración</a>
 </body>
 </html>

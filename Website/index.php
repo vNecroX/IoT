@@ -55,6 +55,7 @@
                     echo "</td></tr>";
                 }
                 echo "</table>";
+                echo "<a href='configuracion.php' class='button'>Configuración</a>";
                 $csvFile = 'sensor_data.csv';
                 if (file_exists($csvFile)) {
                     echo "<h2>Tabla de datos del archivo CSV</h2>";
@@ -69,11 +70,11 @@
                                 $firstLine = false;
                                 continue;
                             }
-
-                            $timestamp = date('Y-m-d H:i:s', $row[0]);
+                            date_default_timezone_set('America/Mexico_City');
+                            $timestamp = date('Y-m-d H:i:s', intval($row[0]));
                             $nombre = $row[1];
                             $datos = json_decode($row[2]);
-
+                    
                             echo "<tr><td>$timestamp</td><td>$nombre</td><td>";
                             if (isset($datos)) {
                                 foreach ($datos as $dato) {
@@ -86,11 +87,12 @@
                             }
                             echo "</td></tr>";
                         }
-
+                    
                         fclose($file);
                     } else {
                         echo "Error al abrir el archivo CSV.";
                     }
+
 
                     echo "</tbody></table>";
                 } else {
