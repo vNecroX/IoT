@@ -14,7 +14,7 @@ float h, t;
 String percent = String("%");
 String celsius = String("°C");
 
-int FAN_GPIO25 = 25;
+int FAN_GPIO23 = 23;
 
 int PHOTO_GPIO34 = 34;
 int lumens;
@@ -40,7 +40,8 @@ void setup(){
   
   dht.begin();
 
-  pinMode(FAN_GPIO25, OUTPUT);
+  pinMode(FAN_GPIO23, OUTPUT);
+  digitalWrite(FAN_GPIO23, HIGH);
 
   pinMode(PHOTO_GPIO34, INPUT);
 
@@ -238,9 +239,9 @@ void decEncResponseJSON(String response){
   if(t >= idealTemperature) fan = "on";
   else fan = "off";
 
-  
-  if(fan.equals("on")) pinMode(FAN_GPIO25, OUTPUT);
-  if(fan.equals("off")) pinMode(FAN_GPIO25, INPUT);
+  Serial.print("FAN: "+fan);
+  if(fan.equals("on")) digitalWrite(FAN_GPIO23, HIGH);
+  if(fan.equals("off")) digitalWrite(FAN_GPIO23, LOW);
 
   if(lumens <= lumensToON){
     mainDoor = "on";
