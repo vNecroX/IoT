@@ -1,0 +1,9 @@
+{
+    "temperaturaIdeal": "25",
+    "puertaPrincipal": "off",
+    "salon1": "off",
+    "salon2": "off",
+    "luminosidadEncender": "500",
+    "luminosidadApagar": "800",
+    "ventilador": "off"
+}

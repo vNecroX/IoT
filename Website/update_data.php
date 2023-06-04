@@ -19,6 +19,7 @@ if (isset($_POST['data'])) {
     $csvData = array();
 
     if (is_array($data)) {
+        $configJsonSended=false;
         foreach ($data as $obj) {
             if (isset($obj->nombre) && isset($obj->datos)) {
                 $nombre = $conn->real_escape_string($obj->nombre);
@@ -41,8 +42,10 @@ if (isset($_POST['data'])) {
                                 $sql = "UPDATE datos SET resultado='$resultado' WHERE sensor_id='$sensor_id' AND tipoDeDato='$tipoDeDato'";
                                 if ($conn->query($sql) !== TRUE) {
                                     echo "Error: " . $sql . "<br>" . $conn->error;
-                                } else {
-                                    echo "{'response':'OK'}";
+                                }else if(!$configJsonSended){
+                                    $configJsonSended=true;
+                                    $jsonConfiguracion = file_get_contents("configuracion.json");
+                                    echo $jsonConfiguracion;
                                 }
                             }
                         }
@@ -63,16 +66,14 @@ if (isset($_POST['data'])) {
                                     $sql = "INSERT INTO datos (sensor_id, tipoDeDato, resultado) VALUES ('$sensor_id', '$tipoDeDato', '$resultado')";
                                     if ($conn->query($sql) !== TRUE) {
                                         echo "Error: " . $sql . "<br>" . $conn->error;
-                                    } else {
-                                        echo "{'response':'OK'}";
+                                    }else if(!$configJsonSended){
+                                        $configJsonSended=true;
+                                        $jsonConfiguracion = file_get_contents("configuracion.json");
+                                        echo $jsonConfiguracion;
                                     }
                                 }
                             }
                         }
-
-                        // Store data in CSV format
-                        $csvRow = $currentTimestamp . ',"' . $nombre . '","' . str_replace('"', '""', json_encode($datos)) . '"';
-                        $csvData[] = $csvRow;
                     } else {
                         echo "Error: " . $sql . "<br>" . $conn->error;
                     }
@@ -82,30 +83,43 @@ if (isset($_POST['data'])) {
             }
         }
 
-        // Append data to CSV file
-        if (!empty($csvData)) {
-            $csvFile = 'sensor_data.csv';
-            $fileExists = file_exists($csvFile);
-
-            $file = fopen($csvFile, 'a');
-            if (!$file) {
-                echo "Error opening file.";
-            } else {
-                if (!$fileExists) {
-                    fwrite($file, "Timestamp,Nombre,Datos\n");
+        //$csvData = "Timestamp,Nombre,Datos\n";
+        date_default_timezone_set('America/Mexico_City');
+        $currentTimestamp = date('Y-m-d H:i:s');
+        
+        if (is_array($data)) {
+            foreach ($data as $obj) {
+                if (isset($obj->nombre) && isset($obj->datos)) {
+                    $nombre = $conn->real_escape_string($obj->nombre);
+                    $datos = $obj->datos;
+    
+                    $currentTimestamp = time();
+                    $csvRow = '"' . $currentTimestamp . '","' . $nombre . '","' . str_replace('"', '""', json_encode($datos, JSON_UNESCAPED_UNICODE)) . "\"\n";
+                    $csvData .= $csvRow;
                 }
-
-                foreach ($csvData as $row) {
-                    fwrite($file, $row . "\n");
-                }
-
-                fclose($file);
-                echo "Data appended to CSV file.";
             }
+        }
+        
+        $csvFile = 'sensor_data.csv';
+        $file = fopen($csvFile, 'a');
+        
+        if ($file) {
+            $csvData = str_replace('Array', '', $csvData);
+            fwrite($file, $csvData);
+            fclose($file);
+        } else {
+            echo "Error opening file.";
         }
     }
 } else {
     echo "Please provide JSON data.";
+}
+
+if (isset($_POST['configuracion'])) {
+    $jsonConfiguracion = $_POST['configuracion'];
+    file_put_contents("configuracion.json", $jsonConfiguracion);
+} else {
+    echo "Please provide config JSON data.";
 }
 
 // Close connection
