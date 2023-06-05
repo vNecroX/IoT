@@ -45,6 +45,8 @@ if (file_exists("configuracion.json")) {
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let checkBoxChanged;
+        let editingNumberInputs;
         // Función para actualizar los datos en la página
         function actualizarDatos() {
             $.ajax({
@@ -54,13 +56,17 @@ if (file_exists("configuracion.json")) {
                 success: function(response) {
                     var configuracion = response["configuracion"];
                     // Actualizar los datos de configuración en la tabla
-                    $("#input-temperatura").val(configuracion.temperaturaIdeal);
-                    $("input[name=puertaPrincipal][value=" + configuracion.puertaPrincipal + "]").prop("checked", true);
-                    $("input[name=salon1][value=" + configuracion.salon1 + "]").prop("checked", true);
-                    $("input[name=salon2][value=" + configuracion.salon2 + "]").prop("checked", true);
-                    $("#input-luminosidad-encender").val(configuracion.luminosidadEncender);
-                    $("#input-luminosidad-apagar").val(configuracion.luminosidadApagar);
-                    $("input[name=ventilador][value=" + configuracion.ventilador + "]").prop("checked", true);
+                    if(!editingNumberInputs){
+                        $("#input-temperatura").val(configuracion.temperaturaIdeal);
+                        $("#input-luminosidad-apagar").val(configuracion.luminosidadApagar);
+                        $("#input-luminosidad-encender").val(configuracion.luminosidadEncender);
+                    }
+                    if(!checkBoxChanged){
+                        $("input[name=puertaPrincipal][value=" + configuracion.puertaPrincipal + "]").prop("checked", true);
+                        $("input[name=salon1][value=" + configuracion.salon1 + "]").prop("checked", true);
+                        $("input[name=salon2][value=" + configuracion.salon2 + "]").prop("checked", true);
+                        $("input[name=ventilador][value=" + configuracion.ventilador + "]").prop("checked", true);
+                    }
                     // Verificar si la distancia es menor a 12 cm
                     var distancia = parseFloat(response["Sensor de ultrasonido"]);
                     if (distancia < 12 && puedeMostrarNotificacion) {
@@ -94,6 +100,20 @@ if (file_exists("configuracion.json")) {
 
         // Iniciar la actualización automática al cargar la página
         $(document).ready(function() {
+            checkBoxChanged = false;
+            editingNumberInputs = false;
+            const numberInputs = document.querySelectorAll('input[type="number"]');
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(function(radioButton) {
+                radioButton.addEventListener('change', function() {
+                    editingRadioButtons = true;
+                });
+            });
+            numberInputs.forEach(function(numberInput) {
+                numberInput.addEventListener('input', function() {
+                    editingNumberInputs = true;
+                });
+            });
             iniciarActualizacionAutomatica();
         });
     </script>
@@ -113,7 +133,7 @@ if (file_exists("configuracion.json")) {
                     <tr>
                         <td>Temperatura Ideal</td>
                         <td>
-                            <input type="number" step="0.01" min="0" max="100" placeholder="Temperatura" id="input-temperatura" name="temperaturaIdeal" value="<?php echo isset($configuracion["temperaturaIdeal"]) ? $configuracion["temperaturaIdeal"] : ""; ?>">
+                            <input type="number" step="0.01" min="-40" max="60" placeholder="Temperatura" id="input-temperatura" name="temperaturaIdeal" value="<?php echo isset($configuracion["temperaturaIdeal"]) ? $configuracion["temperaturaIdeal"] : ""; ?>">
                         </td>
                     </tr>
                     <tr>
@@ -146,13 +166,13 @@ if (file_exists("configuracion.json")) {
                     <tr>
                         <td>Nivel de Luminosidad para Encender las Luces</td>
                         <td>
-                            <input type="number" step="1" min="0" max="1000" placeholder="Luminosidad" id="input-luminosidad-encender" name="luminosidadEncender" value="<?php echo isset($configuracion["luminosidadEncender"]) ? $configuracion["luminosidadEncender"] : ""; ?>">
+                            <input type="number" step="1" min="0" max="2500" placeholder="Luminosidad" id="input-luminosidad-encender" name="luminosidadEncender" value="<?php echo isset($configuracion["luminosidadEncender"]) ? $configuracion["luminosidadEncender"] : ""; ?>">
                         </td>
                     </tr>
                     <tr>
                         <td>Nivel de Luminosidad para Apagar las Luces</td>
                         <td>
-                            <input type="number" step="1" min="0" max="1000" placeholder="Luminosidad" id="input-luminosidad-apagar" name="luminosidadApagar" value="<?php echo isset($configuracion["luminosidadApagar"]) ? $configuracion["luminosidadApagar"] : ""; ?>">
+                            <input type="number" step="1" min="0" max="2500" placeholder="Luminosidad" id="input-luminosidad-apagar" name="luminosidadApagar" value="<?php echo isset($configuracion["luminosidadApagar"]) ? $configuracion["luminosidadApagar"] : ""; ?>">
                         </td>
                     </tr>
                     <tr>
