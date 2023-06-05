@@ -4,19 +4,25 @@
 #include <HTTPClient.h>
 
 // Own network credentials
-const char* ssid = "json";
-const char* password = "12345678";
+const char* ssid = "INFINITUM1D2D_2.4";
+const char* password = "6111611161116";
 
 #define DHTPIN_GPIO5 5     
-#define DHTTYPE DHT11 
+#define DHTTYPE DHT11
 DHT dht(DHTPIN_GPIO5, DHTTYPE);
 float h, t;
 String percent = String("%");
 String celsius = String("°C");
 
+int FAN_GPIO23 = 23;
+
 int PHOTO_GPIO34 = 34;
 int lumens;
 String luminosityLevel = String(" lumenes");
+
+int LEDmainDoor_GPIO21 = 21;
+int LEDroom1_GPIO4 = 4;
+int LEDroom2_GPIO15 = 15;
 
 #define SOUND_SPEED 0.034
 int ULTRAtrig_GPIO18 = 18;
@@ -34,7 +40,14 @@ void setup(){
   
   dht.begin();
 
+  pinMode(FAN_GPIO23, OUTPUT);
+  digitalWrite(FAN_GPIO23, HIGH);
+
   pinMode(PHOTO_GPIO34, INPUT);
+
+  pinMode(LEDmainDoor_GPIO21, OUTPUT);
+  pinMode(LEDroom1_GPIO4, OUTPUT);
+  pinMode(LEDroom2_GPIO15, OUTPUT);
 
   pinMode(ULTRAtrig_GPIO18, OUTPUT);
   pinMode(ULTRAecho_GPIO19, INPUT);
@@ -184,22 +197,105 @@ void createJSON(){
   Serial.print("jsonData: ");
   Serial.println(jsonDataEncoder);
 
-  sendJSON(requestBody);
+  sendJSON_zero(requestBody);
   
   Serial.print("\n");
 }
 
-void sendJSON(String request){
-  HTTPClient http;
-  
+void sendJSON_zero(String request){
+  HTTPClient http; 
+
   http.begin(serverPath);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
+
   int httpResponseCode = http.POST(request);
   String response = http.getString();
   
   if(httpResponseCode > 0){
     Serial.println(response);
+    decEncResponseJSON(response);
+  }else{
+    Serial.println("Error on HTTP request");
+    Serial.print("\n");
+    Serial.println(response);
+  }
+
+  http.end();
+}
+
+void decEncResponseJSON(String response){
+  StaticJsonDocument<300> JSON_Decoder;
+  DeserializationError error = deserializeJson(JSON_Decoder, response);
+  if(error){ return; }
+
+  float idealTemperature = JSON_Decoder["temperaturaIdeal"];
+  String mainDoor = JSON_Decoder["puertaPrincipal"];
+  String room1 = JSON_Decoder["salon1"];
+  String room2 = JSON_Decoder["salon2"];
+  int lumensToON = JSON_Decoder["luminosidadEncender"];
+  int lumensToOff = JSON_Decoder["luminosidadApagar"];
+  String fan = JSON_Decoder["ventilador"];
+
+  if(t >= idealTemperature) fan = "on";
+  else fan = "off";
+
+  Serial.print("FAN: "+fan);
+  if(fan.equals("on")) digitalWrite(FAN_GPIO23, HIGH);
+  if(fan.equals("off")) digitalWrite(FAN_GPIO23, LOW);
+
+  if(lumens <= lumensToON){
+    mainDoor = "on";
+    room1 = "on";
+    room2 = "on";
+  }
+  else if(lumens >= lumensToOff){
+    mainDoor = "off";
+    room1 = "off";
+    room2 = "off";
+  }
+
+  if(mainDoor.equals("on")) digitalWrite(LEDmainDoor_GPIO21, HIGH);
+  if(room1.equals("on")) digitalWrite(LEDroom1_GPIO4, HIGH);
+  if(room2.equals("on")) digitalWrite(LEDroom2_GPIO15, HIGH);
+
+  if(mainDoor.equals("off")) digitalWrite(LEDmainDoor_GPIO21, LOW);
+  if(room1.equals("off")) digitalWrite(LEDroom1_GPIO4, LOW);
+  if(room2.equals("off")) digitalWrite(LEDroom2_GPIO15, LOW);
+
+  String json;
+  StaticJsonDocument<300> JSON_Encoder;
+
+  JSON_Encoder["temperaturaIdeal"] = idealTemperature;
+  JSON_Encoder["puertaPrincipal"] = mainDoor;
+  JSON_Encoder["salon1"] = room1;
+  JSON_Encoder["salon2"] = room2; 
+  JSON_Encoder["luminosidadEncender"] = lumensToON;
+  JSON_Encoder["luminosidadApagar"] = lumensToOff; 
+  JSON_Encoder["ventilador"] = fan;
+  
+  String jsonDataEncoder = JSON_Encoder.as<String>();
+  String requestBody = "configuracion=" + jsonDataEncoder;
+
+  Serial.print("jsonData: ");
+  Serial.println(jsonDataEncoder);
+
+  sendJSON_one(requestBody);
+  
+  Serial.print("\n");
+}
+
+void sendJSON_one(String request){
+  HTTPClient http; 
+
+  http.begin(serverPath);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");  
+
+  int httpResponseCode = http.POST(request);
+  String response = http.getString();
+
+  if(httpResponseCode > 0){
+    Serial.println("Updated HTTP request");
+    Serial.print("\n");
   }else{
     Serial.println("Error on HTTP request");
     Serial.print("\n");
