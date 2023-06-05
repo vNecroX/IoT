@@ -1,9 +1,9 @@
 <?php
 // Configuración de la base de datos
 $servername = "localhost";
-$username = "id20686621_codemasterx";//"id20686621_codemasterx" //"root"
-$password = "~Md]>IFxaJyOL4P1";//~Md]>IFxaJyOL4P1 //""
-$dbname = "id20686621_ceti_sensordata";//"id20686621_ceti_sensordata" 
+$username = "root";//"id20686621_codemasterx" //"root"
+$password = "";//~Md]>IFxaJyOL4P1 //""
+$dbname = "ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
 
 // Crear conexión a la base de datos
 $conn = new mysqli($servername, $username, $password, $dbname);
