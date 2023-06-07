@@ -43,7 +43,7 @@ if (file_exists("configuracion.json")) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="minjs/jquery-3.6.0.min.js"></script>
     <script>
         let checkBoxChanged;
         let editingNumberInputs;
@@ -188,7 +188,8 @@ if (file_exists("configuracion.json")) {
             </table>
             <button type="submit" class="button">Guardar Configuración</button>
         </form>
-        <a class="button" href="index.php">Home</a>
+        <div class="button"><a class="button" href="index.php">Home</a></div>
+        <a class="button" href="charts.php">Charts</a>
     </div>
 </body>
 </html>
