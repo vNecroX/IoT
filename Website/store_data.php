@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "root";//"id20686621_codemasterx" //"root"
-$password = "";//~Md]>IFxaJyOL4P1 //""
-$dbname = "ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
+$username = "id20878984_codemasterx";//"id20686621_codemasterx" //"root"
+$password = "OjT9Fz+E0m|9szJ=";//~Md]>IFxaJyOL4P1 //""
+$dbname = "id20878984_ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

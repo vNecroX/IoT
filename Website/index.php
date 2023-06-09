@@ -13,9 +13,9 @@
         <h1>Tabla de datos de sensores</h1>
         <?php
             $servername = "localhost";
-            $username = "root";//"id20686621_codemasterx" //"root"
-            $password = "";//~Md]>IFxaJyOL4P1 //""
-            $dbname = "ceti_sensordata";//"id20686621_ceti_sensordata" //"ceti_sensordata"
+            $username = "id20878984_codemasterx";//id20878984_codemasterx //"id20686621_codemasterx" //"root"
+            $password = "OjT9Fz+E0m|9szJ=";//OjT9Fz+E0m|9szJ= //~Md]>IFxaJyOL4P1 //""
+            $dbname = "id20878984_ceti_sensordata";//id20878984_ceti_sensordata //"id20686621_ceti_sensordata" //"ceti_sensordata"
 
             // Create connection
             $conn = new mysqli($servername, $username, $password, $dbname);
@@ -55,53 +55,52 @@
                     echo "</td></tr>";
                 }
                 echo "</table>";
-                echo "<a href='configuracion.php' class='button'>Configuración</a>";
-                $csvFile = 'sensor_data.csv';
-                if (file_exists($csvFile)) {
-                    echo "<h2>Tabla de datos del archivo CSV</h2>";
-                    echo "<table class='datatable'><thead>";
-                    echo "<tr class='table-titles'><th><h3>Timestamp</h3></th><th><h3>Nombre</h3></th><th><h3>Datos</h3></th></tr></thead><tbody>";
-
-                    $file = fopen($csvFile, 'r');
-                    if ($file) {
-                        $firstLine = true;
-                        while (($row = fgetcsv($file)) !== false) {
-                            if ($firstLine) {
-                                $firstLine = false;
-                                continue;
-                            }
-                            date_default_timezone_set('America/Mexico_City');
-                            $timestamp = date('Y-m-d H:i:s', intval($row[0]));
-                            $nombre = $row[1];
-                            $datos = json_decode($row[2]);
-                    
-                            echo "<tr><td>$timestamp</td><td>$nombre</td><td>";
-                            if (isset($datos)) {
-                                foreach ($datos as $dato) {
-                                    $tipoDeDato = $dato->tipoDeDato;
-                                    $resultado = $dato->resultado;
-                                    echo "$tipoDeDato: $resultado<br/>";
-                                }
-                            } else {
-                                echo "No data available.";
-                            }
-                            echo "</td></tr>";
-                        }
-                    
-                        fclose($file);
-                    } else {
-                        echo "Error al abrir el archivo CSV.";
-                    }
-
-
-                    echo "</tbody></table>";
-                } else {
-                    echo "<p>No se encontró el archivo CSV.</p>";
-                }
             } else {
                 echo "No data available.";
             }
+            echo "<a href='configuracion.php' class='button'>Configuración</a>";
+            $csvFile = 'sensor_data.csv';
+            if (file_exists($csvFile)) {
+                echo "<h2>Tabla de datos del archivo CSV</h2>";
+                echo "<table class='datatable'><thead>";
+                echo "<tr class='table-titles'><th><h3>Timestamp</h3></th><th><h3>Nombre</h3></th><th><h3>Datos</h3></th></tr></thead><tbody>";
 
+                $file = fopen($csvFile, 'r');
+                if ($file) {
+                    $firstLine = true;
+                    while (($row = fgetcsv($file)) !== false) {
+                        if ($firstLine) {
+                            $firstLine = false;
+                            continue;
+                        }
+                        date_default_timezone_set('America/Mexico_City');
+                        $timestamp = date('Y-m-d H:i:s', intval($row[0]));
+                        $nombre = $row[1];
+                        $datos = json_decode($row[2]);
+                
+                        echo "<tr><td>$timestamp</td><td>$nombre</td><td>";
+                        if (isset($datos)) {
+                            foreach ($datos as $dato) {
+                                $tipoDeDato = $dato->tipoDeDato;
+                                $resultado = $dato->resultado;
+                                echo "$tipoDeDato: $resultado<br/>";
+                            }
+                        } else {
+                            echo "No data available.";
+                        }
+                        echo "</td></tr>";
+                    }
+                
+                    fclose($file);
+                } else {
+                    echo "Error al abrir el archivo CSV.";
+                }
+
+
+                echo "</tbody></table>";
+            } else {
+                echo "<p>No se encontró el archivo CSV.</p>";
+            }
             // Close connection
             $conn->close();
         ?>

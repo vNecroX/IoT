@@ -36,6 +36,13 @@ h2 {
     padding-left: 30px;
 }
 
+.button {
+    border-radius: 8px;
+    font-size: 16px;
+    color: #4CAF50;
+    display: inline-block;
+}
+
 .datatable-container {
     font-family: 'Noto Sans', sans-serif;
     background-color: var(--table-background-color-container);

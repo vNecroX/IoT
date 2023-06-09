@@ -43,9 +43,9 @@ if (file_exists("configuracion.json")) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="minjs/jquery-3.6.0.min.js"></script>
     <script>
-        let checkBoxChanged;
+        let editingRadioButtons;
         let editingNumberInputs;
         // Función para actualizar los datos en la página
         function actualizarDatos() {
@@ -61,7 +61,7 @@ if (file_exists("configuracion.json")) {
                         $("#input-luminosidad-apagar").val(configuracion.luminosidadApagar);
                         $("#input-luminosidad-encender").val(configuracion.luminosidadEncender);
                     }
-                    if(!checkBoxChanged){
+                    if(!editingRadioButtons){
                         $("input[name=puertaPrincipal][value=" + configuracion.puertaPrincipal + "]").prop("checked", true);
                         $("input[name=salon1][value=" + configuracion.salon1 + "]").prop("checked", true);
                         $("input[name=salon2][value=" + configuracion.salon2 + "]").prop("checked", true);
@@ -69,7 +69,7 @@ if (file_exists("configuracion.json")) {
                     }
                     // Verificar si la distancia es menor a 12 cm
                     var distancia = parseFloat(response["Sensor de ultrasonido"]);
-                    if (distancia < 12 && puedeMostrarNotificacion) {
+                    if (response["Sensor de ultrasonido"] !== 0 && distancia>0 && distancia < 12 && puedeMostrarNotificacion) {
                         // Mostrar una notificación de que hay una persona en la puerta
                         mostrarNotificacion("¡Hay una persona en la puerta!");
     
@@ -100,7 +100,7 @@ if (file_exists("configuracion.json")) {
 
         // Iniciar la actualización automática al cargar la página
         $(document).ready(function() {
-            checkBoxChanged = false;
+            editingRadioButtons = false;
             editingNumberInputs = false;
             const numberInputs = document.querySelectorAll('input[type="number"]');
             const radioButtons = document.querySelectorAll('input[type="radio"]');
@@ -121,7 +121,7 @@ if (file_exists("configuracion.json")) {
 <body>
     <div class="datatable-container">
         <h1>Configuración</h1>
-        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+        <form method="post" action="configuracion.php">
             <table class="datatable">
                 <thead>
                     <tr class="table-titles">
@@ -188,7 +188,8 @@ if (file_exists("configuracion.json")) {
             </table>
             <button type="submit" class="button">Guardar Configuración</button>
         </form>
-        <a class="button" href="index.php">Home</a>
+        <div class="button"><a class="button" href="index.php">Home</a></div>
+        <a class="button" href="charts.php">Charts</a>
     </div>
 </body>
 </html>
