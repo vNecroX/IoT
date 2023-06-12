@@ -41,10 +41,7 @@ void setup(){
   dht.begin();
 
   pinMode(FAN_GPIO23, OUTPUT);
-<<<<<<< Updated upstream
   digitalWrite(FAN_GPIO23, HIGH);
-=======
->>>>>>> Stashed changes
 
   pinMode(PHOTO_GPIO34, INPUT);
 
@@ -239,20 +236,18 @@ void decEncResponseJSON(String response){
   int lumensToOff = JSON_Decoder["luminosidadApagar"];
   String fan = JSON_Decoder["ventilador"];
 
-<<<<<<< Updated upstream
   if(t >= idealTemperature) fan = "on";
   else fan = "off";
 
   Serial.print("FAN: "+fan);
   if(fan.equals("on")) digitalWrite(FAN_GPIO23, HIGH);
   if(fan.equals("off")) digitalWrite(FAN_GPIO23, LOW);
-=======
+
   if(t >= idealTemperature + 2) fan = "on";
   else if(t <= idealTemperature - 2)fan = "off";
   
   if(fan.equals("on")) digitalWrite(FAN_GPIO23, LOW);
   if(fan.equals("off")) digitalWrite(FAN_GPIO23, HIGH);
->>>>>>> Stashed changes
 
   if(lumens <= lumensToON){
     mainDoor = "on";
