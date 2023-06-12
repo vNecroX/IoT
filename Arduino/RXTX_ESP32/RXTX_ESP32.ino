@@ -4,8 +4,8 @@
 #include <HTTPClient.h>
 
 // Own network credentials
-const char* ssid = "INFINITUM1D2D_2.4";
-const char* password = "6111611161116";
+const char* ssid = "Dark";
+const char* password = "12345678";
 
 #define DHTPIN_GPIO5 5     
 #define DHTTYPE DHT11
@@ -31,7 +31,7 @@ long pulseDuration;
 float distance;
 String cm = String("cm");
 
-String serverPath = "https://ceti-iiot-codemasterx.000webhostapp.com/update_data.php";
+String serverPath = "https://ceti-iiot-codemasterx-2023.000webhostapp.com/update_data.php";
 
 void setup(){
   Serial.begin(9600);
@@ -41,7 +41,10 @@ void setup(){
   dht.begin();
 
   pinMode(FAN_GPIO23, OUTPUT);
+<<<<<<< Updated upstream
   digitalWrite(FAN_GPIO23, HIGH);
+=======
+>>>>>>> Stashed changes
 
   pinMode(PHOTO_GPIO34, INPUT);
 
@@ -236,12 +239,20 @@ void decEncResponseJSON(String response){
   int lumensToOff = JSON_Decoder["luminosidadApagar"];
   String fan = JSON_Decoder["ventilador"];
 
+<<<<<<< Updated upstream
   if(t >= idealTemperature) fan = "on";
   else fan = "off";
 
   Serial.print("FAN: "+fan);
   if(fan.equals("on")) digitalWrite(FAN_GPIO23, HIGH);
   if(fan.equals("off")) digitalWrite(FAN_GPIO23, LOW);
+=======
+  if(t >= idealTemperature + 2) fan = "on";
+  else if(t <= idealTemperature - 2)fan = "off";
+  
+  if(fan.equals("on")) digitalWrite(FAN_GPIO23, LOW);
+  if(fan.equals("off")) digitalWrite(FAN_GPIO23, HIGH);
+>>>>>>> Stashed changes
 
   if(lumens <= lumensToON){
     mainDoor = "on";
